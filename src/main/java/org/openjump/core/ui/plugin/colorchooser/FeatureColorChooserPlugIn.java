@@ -124,6 +124,9 @@ public class FeatureColorChooserPlugIn extends AbstractPlugIn {
     // - recent
     private JPopupMenu initPopupLazily() {
 
+      //TODO I don't know why context.getLayerViewPanel and context.getLayerNamePanel are null
+      //     this is the reason why context.getWorkbenchContext() is used instead
+
       final JPopupMenu popup = new JPopupMenu();
       popup.setLayout(new GridLayout(0, 1));
 
