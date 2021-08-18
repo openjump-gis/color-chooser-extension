@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.openjump</groupId>
     <artifactId>color-chooser-extension</artifactId>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
     <name>color-chooser-extension</name>
     <description>Color chooser extension</description>
 
@@ -16,20 +16,26 @@
         <jts.version>1.18.1</jts.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>ojrepo</id>
+            <name>OpenJUMP Snapshot Repository</name>
+            <url>https://ojrepo.soldin.de/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
+
+        <dependency>
+            <groupId>org.openjump</groupId>
+            <artifactId>OpenJUMP</artifactId>
+            <version>2.0-main-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>org.locationtech.jts</groupId>
             <artifactId>jts-core</artifactId>
             <version>${jts.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openjump</groupId>
-            <artifactId>OpenJUMP</artifactId>
-            <version>2.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/OpenJUMP-20210412-b68329e.jar</systemPath>
         </dependency>
 
         <dependency>

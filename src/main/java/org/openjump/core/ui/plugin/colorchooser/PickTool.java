@@ -1,5 +1,7 @@
 package org.openjump.core.ui.plugin.colorchooser;
 
+import com.vividsolutions.jump.I18N;
+import com.vividsolutions.jump.workbench.JUMPWorkbench;
 import images.ColorChooserIconLoader;
 
 import java.awt.Color;
@@ -9,8 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.*;
-
-import language.I18NPlug;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
@@ -33,10 +33,12 @@ import com.vividsolutions.jump.workbench.ui.renderer.style.BasicStyle;
  */
 public class PickTool extends NClickTool {
 
+    I18N i18n = I18N.getInstance("color_chooser");
+
     private final ComboButton colorMenu;
 
     public PickTool(ComboButton colorMenu) {
-        super(1);
+        super(JUMPWorkbench.getInstance().getContext(), 1);
         this.colorMenu = colorMenu;
     }
 
@@ -56,7 +58,7 @@ public class PickTool extends NClickTool {
             // if (schema.hasAttribute(R_G_B)) {
             final Map<Layer, Set<Feature>> map =
                 SpecifyFeaturesTool.layerToSpecifiedFeaturesMap(
-                    panel.getLayerManager().iterator(), EnvelopeUtil.expand(
+                    panel.getLayerManager().getLayers().iterator(), EnvelopeUtil.expand(
                             new Envelope(panel.getViewport().toModelCoordinate(
                                     point)), PIXEL_BUFFER
                                     / panel.getViewport().getScale()));
@@ -72,20 +74,20 @@ public class PickTool extends NClickTool {
                     .getWorkbench()
                     .getFrame()
                     .setStatusMessage(
-                            I18NPlug.getI18N("color") + " - " + "Index color: "
+                            i18n.get("color") + " - " + "Index color: "
                                     + acad + "   Hex: " + hex + "   RGB: "
                                     + color.getRed() + "," + color.getGreen()
                                     + "," + color.getBlue(), 5000);
 
         } catch (final Exception e) {
             getWorkbench().getContext().getWorkbench().getFrame()
-                    .setStatusMessage(I18NPlug.getI18N("msg1"), 5000);
+                    .setStatusMessage(i18n.get("msg1"), 5000);
         }
     }
 
     @Override
     public String getName() {
-        return I18NPlug.getI18N("picker-color");
+        return i18n.get("picker-color");
     }
 
     @Override

@@ -20,8 +20,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
+import com.vividsolutions.jump.I18N;
 import com.vividsolutions.jump.workbench.Logger;
-import language.I18NPlug;
 import org.openjump.core.ui.plugin.colorchooser.gui.ColorMenu;
 import org.openjump.core.ui.plugin.colorchooser.gui.ComboButton;
 import org.openjump.core.ui.plugin.colorchooser.utils.ColorUtils;
@@ -30,7 +30,6 @@ import com.vividsolutions.jump.feature.AttributeType;
 import com.vividsolutions.jump.feature.Feature;
 import com.vividsolutions.jump.feature.FeatureCollectionWrapper;
 import com.vividsolutions.jump.feature.FeatureSchema;
-import com.vividsolutions.jump.workbench.WorkbenchContext;
 import com.vividsolutions.jump.workbench.model.FeatureEventType;
 import com.vividsolutions.jump.workbench.model.Layer;
 import com.vividsolutions.jump.workbench.model.LayerManager;
@@ -48,6 +47,8 @@ import com.vividsolutions.jump.workbench.ui.renderer.style.BasicStyle;
 import images.ColorChooserIconLoader;
 
 public class FeatureColorChooserPlugIn extends AbstractPlugIn {
+
+    I18N i18n = I18N.getInstance("color_chooser");
 
     public static final String COLOR = "COLOR";
     public static final String R_G_B = BasicStyle.RGB_ATTRIBUTE_NAME;
@@ -107,8 +108,8 @@ public class FeatureColorChooserPlugIn extends AbstractPlugIn {
         }
       });
 
-      colorSetButton.setToolTipText(I18NPlug.getI18N("set-color-tool"));
-      colorChooserButton.setToolTipText(I18NPlug.getI18N("pick-color-tools"));
+      colorSetButton.setToolTipText(i18n.get("set-color-tool"));
+      colorChooserButton.setToolTipText(i18n.get("pick-color-tools"));
   
       context.getWorkbenchContext().getWorkbench().getFrame().getToolBar().addSeparator();
       context.getWorkbenchContext().getWorkbench().getFrame().getToolBar().add(colorSetButton);
@@ -116,7 +117,7 @@ public class FeatureColorChooserPlugIn extends AbstractPlugIn {
       context.getWorkbenchContext().getWorkbench().getFrame().getToolBar().addSeparator();
     }
 
-    // Initialize the popu associated to colorChooserButton and containing
+    // Initialize the popup associated to colorChooserButton and containing
     // - useLayerStyleMenuItem
     // - colorMenu
     // - otherColorMenuItem
@@ -132,7 +133,7 @@ public class FeatureColorChooserPlugIn extends AbstractPlugIn {
 
       // Defining menuItems and submenus
       JMenuItem useLayerStyleMenuItem =
-          new JMenuItem(I18NPlug.getI18N("use-layer-style-color"),
+          new JMenuItem(i18n.get("use-layer-style-color"),
           new ColorIcon(null));
 
       useLayerStyleMenuItem.addActionListener(new ActionListener() {
@@ -154,10 +155,10 @@ public class FeatureColorChooserPlugIn extends AbstractPlugIn {
         }
       });
 
-      final JMenu recent = new JMenu(I18NPlug.getI18N("recent-color") + "...");
+      final JMenu recent = new JMenu(i18n.get("recent-color") + "...");
 
       final ColorMenu colorMenu = new ColorMenu(
-          I18NPlug.getI18N("choose-color"), getColorIcon());
+          i18n.get("choose-color"), getColorIcon());
 
       colorMenu.addActionListener(new ActionListener() {
           @Override
@@ -192,14 +193,14 @@ public class FeatureColorChooserPlugIn extends AbstractPlugIn {
 
 
       JMenuItem otherColorMenuItem = new JMenuItem(
-          I18NPlug.getI18N("other-color"), getColorIcon_2());
+          i18n.get("other-color"), getColorIcon_2());
       otherColorMenuItem.addActionListener(new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent paramAnonymousActionEvent) {
               new JColorChooser();
               final Color color = JColorChooser.showDialog(context
                       .getWorkbenchContext().getWorkbench().getFrame(),
-                      I18NPlug.getI18N("choose-color"), new Color(0, 0, 0));
+                  i18n.get("choose-color"), new Color(0, 0, 0));
               if (color != null) {
                   colorSetButton.setColor(color);
                   setFeatureColor(color);
@@ -225,8 +226,8 @@ public class FeatureColorChooserPlugIn extends AbstractPlugIn {
       });
 
       // popup.addSeparator();
-      JMenuItem pickerColorMenuItem = new JMenuItem(I18NPlug.getI18N("picker-color"), getPickColorIcon());
-      pickerColorMenuItem.setToolTipText(I18NPlug.getI18N("msg2"));
+      JMenuItem pickerColorMenuItem = new JMenuItem(i18n.get("picker-color"), getPickColorIcon());
+      pickerColorMenuItem.setToolTipText(i18n.get("msg2"));
       final PickTool pickTool = new PickTool(colorSetButton);
       pickerColorMenuItem.addActionListener(e ->
           context.getWorkbenchContext().getLayerViewPanel().setCurrentCursorTool(pickTool));
@@ -269,7 +270,7 @@ public class FeatureColorChooserPlugIn extends AbstractPlugIn {
                 continue;
             }
             layerViewPanel.getContext().warnUser(
-                    I18NPlug.getI18N("selected-items-layers-must-be-editable")
+                i18n.get("selected-items-layers-must-be-editable")
                             + " (" + layer.getName() + ")");
             return;
         }
@@ -329,7 +330,7 @@ public class FeatureColorChooserPlugIn extends AbstractPlugIn {
             Colors.add(feature.getString(COLOR));
         }
 
-        final LayerManager layerManager = context.getLayerManager();//layers.iterator().next().getLayerManager();
+        final LayerManager layerManager = context.getLayerManager();
         layerManager.getUndoableEditReceiver().startReceiving();
 
         try {
@@ -383,12 +384,11 @@ public class FeatureColorChooserPlugIn extends AbstractPlugIn {
         return true;
     }
 
-    public static EnableCheck createEnableCheck(
-            WorkbenchContext workbenchContext, boolean b) {
-        final EnableCheckFactory checkFactory = new EnableCheckFactory(
-                workbenchContext);
-
-        return new MultiEnableCheck().add(
+    @Override
+    public EnableCheck getEnableCheck() {
+      // TODO I dont think this enable check is applied as the menu is added manually by this plugin
+      EnableCheckFactory checkFactory = getWorkbenchContext().createPlugInContext().getCheckFactory();
+      return new MultiEnableCheck().add(
                 checkFactory.createWindowWithLayerViewPanelMustBeActiveCheck())
                 .add(checkFactory.createAtLeastNLayersMustBeEditableCheck(1));
     }

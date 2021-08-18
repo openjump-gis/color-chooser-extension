@@ -8,7 +8,7 @@ import com.vividsolutions.jump.workbench.plugin.PlugInContext;
 public class FeatureColorChooserExtension extends Extension {
 
     private static final String NAME = "Feature Color Chooser PlugIn (Giuseppe Aruta - adapted from SkyJUMP sourceforge.net/projects/skyjump/)";
-    private static final String VERSION = "2.0 (21-04-19)";
+    private static final String VERSION = "2.1.0 (2021-08-18)";
 
     public String getName() {
         return NAME;

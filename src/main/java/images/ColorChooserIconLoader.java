@@ -33,6 +33,7 @@
 package images;
 
 import java.awt.Image;
+import java.util.Objects;
 
 import javax.swing.ImageIcon;
 
@@ -42,7 +43,7 @@ import javax.swing.ImageIcon;
 public class ColorChooserIconLoader {
 
 	public static ImageIcon icon(String filename) {
-		return new ImageIcon(ColorChooserIconLoader.class.getResource(filename));
+		return new ImageIcon(Objects.requireNonNull(ColorChooserIconLoader.class.getResource(filename)));
 	}
 
 	public static Image image(String filename) {
