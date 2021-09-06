@@ -1,50 +1,114 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.openjump</groupId>
-    <artifactId>color-chooser-extension</artifactId>
-    <version>2.1.0</version>
-    <name>color-chooser-extension</name>
-    <description>Color chooser extension</description>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openjump</groupId>
+  <artifactId>color-chooser-extension</artifactId>
+  <version>2.1.0</version>
+  <name>color-chooser-extension</name>
+  <description>Color chooser extension</description>
 
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.number>0.0.0</version.number>
-        <jts.version>1.18.1</jts.version>
-    </properties>
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
-    <repositories>
-        <repository>
-            <id>ojrepo</id>
-            <name>OpenJUMP Snapshot Repository</name>
-            <url>https://ojrepo.soldin.de/</url>
-        </repository>
-    </repositories>
+  <repositories>
+    <repository>
+      <id>ojrepo</id>
+      <name>OpenJUMP Snapshot Repository</name>
+      <url>https://ojrepo.soldin.de/</url>
+    </repository>
+  </repositories>
 
-    <dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>org.openjump</groupId>
+      <artifactId>OpenJUMP</artifactId>
+      <version>2.0-main-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
 
-        <dependency>
-            <groupId>org.openjump</groupId>
-            <artifactId>OpenJUMP</artifactId>
-            <version>2.0-main-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.locationtech.jts</groupId>
-            <artifactId>jts-core</artifactId>
-            <version>${jts.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>test</scope>
-        </dependency>
-
-    </dependencies>
-
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>color_chooser/language/</include>
+        </includes>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>build-datestamp-property</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>timestamp-property</goal>
+            </goals>
+            <configuration>
+              <name>project.build.datestamp</name>
+              <pattern>yyyy-MM-dd</pattern>
+              <locale>en_US</locale>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+          <appendAssemblyId>false</appendAssemblyId>
+        </configuration>
+        <executions>
+          <execution>
+            <id>distro zip</id>
+            <phase>package</phase>
+            <configuration>
+              <descriptors>
+                <descriptor>distro-zip.xml</descriptor>
+              </descriptors>
+              <attach>false</attach>
+            </configuration>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>net.nicoulaj.maven.plugins</groupId>
+        <artifactId>checksum-maven-plugin</artifactId>
+        <version>1.10</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>files</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <fileSets>
+                <fileSet>
+                  <directory>${project.build.directory}</directory>
+                  <includes>
+                    <include>${project.build.finalName}.zip</include>
+                  </includes>
+                </fileSet>
+              </fileSets>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
